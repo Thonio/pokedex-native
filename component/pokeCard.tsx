@@ -1,7 +1,8 @@
-import { Image, View, Text, ViewStyle, ViewProps, StyleSheet } from "react-native";
+import { Image, View, Text, ViewStyle, ViewProps, StyleSheet, Pressable } from "react-native";
 import Card from "./card";
 import ThemeText from "./themeText";
 import useColors from "@/hooks/usecolors";
+import { Link } from "expo-router";
 
 type Props = ViewProps & {
   num: number,
@@ -10,11 +11,13 @@ type Props = ViewProps & {
 }
 
 const styles = StyleSheet.create({
-  card: {
+  pressable: {
     flex: 1 / 3,
+  },
+  card: {
     borderRadius: 8,
-    alignItems: 'center',
     position: 'relative',
+    alignItems: 'center',
     zIndex: 0
   },
   text: {
@@ -36,11 +39,15 @@ export default function PokeCard({ num, img, name, ...rest }: Props) {
   const color = useColors()
 
   return (
-    <Card style={styles.card} {...rest}>
-      <ThemeText style={styles.text} variant="caption">#{num.toString().padStart(3, '0')}</ThemeText>
-      <Image source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${num}.png` }} width={72} height={72} />
-      <ThemeText variant="body3">{name}</ThemeText>
-      <View style={[styles.shadow, { backgroundColor: color.grayBg }]} />
-    </Card>
+    <Link href="/about" asChild>
+      <Pressable style={styles.pressable}>
+        <Card style={styles.card} {...rest}>
+          <ThemeText style={styles.text} variant="caption">#{num.toString().padStart(3, '0')}</ThemeText>
+          <Image source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${num}.png` }} width={72} height={72} />
+          <ThemeText variant="body3">{name}</ThemeText>
+          <View style={[styles.shadow, { backgroundColor: color.grayBg }]} />
+        </Card>
+      </Pressable>
+    </Link>
   )
 }
