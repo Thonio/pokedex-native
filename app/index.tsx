@@ -1,7 +1,9 @@
 import Card from "@/component/card";
 import PokeCard from "@/component/pokeCard";
 import ThemeText from "@/component/themeText";
+import { getIdFn } from "@/function/getIdFn";
 import useColors from "@/hooks/usecolors";
+import useFetchQuery from "@/hooks/useFetchQuery";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,10 +28,8 @@ const style = StyleSheet.create({
 
 export default function Index() {
   const colors = useColors()
-  const data = Array.from({ length: 42 }, (_, i) => ({
-    name: `Pokemon ${i + 1}`,
-    id: i + 1
-  }))
+  const { data } = useFetchQuery('/pokemon/?limit=21')
+  const listPokemon = data?.results || []
 
   return (
     <SafeAreaView style={[style.container, { backgroundColor: colors.primary }]}>
@@ -39,14 +39,14 @@ export default function Index() {
       </View>
       <Card style={style.card}>
         <FlatList
-          data={data}
+          data={listPokemon}
           numColumns={3}
           contentContainerStyle={style.gridGap}
           columnWrapperStyle={style.gridGap}
           renderItem={({ item }) => (
-            <PokeCard num={item.id} name={item.name} />
+            <PokeCard num={Number(getIdFn(item.url))} name={item.name} />
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => getIdFn(item.url)?.toString() || ''}
         />
       </Card>
     </SafeAreaView>
